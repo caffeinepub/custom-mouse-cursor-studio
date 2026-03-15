@@ -91,14 +91,22 @@ export class ExternalBlob {
 }
 export interface EarbudsProfile {
     id: bigint;
+    popupTheme: string;
     backgroundColor: string;
+    imageSize: bigint;
     fontStyle: string;
     name: string;
+    borderWidth: bigint;
     accentColor: string;
+    popupShape: string;
     caseBattery: bigint;
+    imagePosition: string;
     rightBattery: bigint;
     image: ExternalBlob;
+    popupSize: bigint;
     leftBattery: bigint;
+    borderColor: string;
+    shadowIntensity: string;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
@@ -118,11 +126,11 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
-    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<bigint>;
+    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob, imageSize: bigint, popupSize: bigint, popupShape: string, popupTheme: string, borderColor: string, borderWidth: bigint, shadowIntensity: string, imagePosition: string): Promise<bigint>;
     deleteProfile(id: bigint): Promise<void>;
     getAllProfiles(): Promise<Array<EarbudsProfile>>;
     getProfile(id: bigint): Promise<EarbudsProfile | null>;
-    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<void>;
+    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob, imageSize: bigint, popupSize: bigint, popupShape: string, popupTheme: string, borderColor: string, borderWidth: bigint, shadowIntensity: string, imagePosition: string): Promise<void>;
 }
 import type { EarbudsProfile as _EarbudsProfile, ExternalBlob as _ExternalBlob, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -211,17 +219,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async addProfile(arg0: string, arg1: bigint, arg2: bigint, arg3: bigint, arg4: string, arg5: string, arg6: string, arg7: ExternalBlob): Promise<bigint> {
+    async addProfile(arg0: string, arg1: bigint, arg2: bigint, arg3: bigint, arg4: string, arg5: string, arg6: string, arg7: ExternalBlob, arg8: bigint, arg9: bigint, arg10: string, arg11: string, arg12: string, arg13: bigint, arg14: string, arg15: string): Promise<bigint> {
         if (this.processError) {
             try {
-                const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7));
+                const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7), arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7));
+            const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7), arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
             return result;
         }
     }
@@ -267,17 +275,17 @@ export class Backend implements backendInterface {
             return from_candid_opt_n13(this._uploadFile, this._downloadFile, result);
         }
     }
-    async updateProfile(arg0: bigint, arg1: string, arg2: bigint, arg3: bigint, arg4: bigint, arg5: string, arg6: string, arg7: string, arg8: ExternalBlob): Promise<void> {
+    async updateProfile(arg0: bigint, arg1: string, arg2: bigint, arg3: bigint, arg4: bigint, arg5: string, arg6: string, arg7: string, arg8: ExternalBlob, arg9: bigint, arg10: bigint, arg11: string, arg12: string, arg13: string, arg14: bigint, arg15: string, arg16: string): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8));
+                const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8), arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8));
+            const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8), arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
             return result;
         }
     }
@@ -302,35 +310,59 @@ function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
 }
 async function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
+    popupTheme: string;
     backgroundColor: string;
+    imageSize: bigint;
     fontStyle: string;
     name: string;
+    borderWidth: bigint;
     accentColor: string;
+    popupShape: string;
     caseBattery: bigint;
+    imagePosition: string;
     rightBattery: bigint;
     image: _ExternalBlob;
+    popupSize: bigint;
     leftBattery: bigint;
+    borderColor: string;
+    shadowIntensity: string;
 }): Promise<{
     id: bigint;
+    popupTheme: string;
     backgroundColor: string;
+    imageSize: bigint;
     fontStyle: string;
     name: string;
+    borderWidth: bigint;
     accentColor: string;
+    popupShape: string;
     caseBattery: bigint;
+    imagePosition: string;
     rightBattery: bigint;
     image: ExternalBlob;
+    popupSize: bigint;
     leftBattery: bigint;
+    borderColor: string;
+    shadowIntensity: string;
 }> {
     return {
         id: value.id,
+        popupTheme: value.popupTheme,
         backgroundColor: value.backgroundColor,
+        imageSize: value.imageSize,
         fontStyle: value.fontStyle,
         name: value.name,
+        borderWidth: value.borderWidth,
         accentColor: value.accentColor,
+        popupShape: value.popupShape,
         caseBattery: value.caseBattery,
+        imagePosition: value.imagePosition,
         rightBattery: value.rightBattery,
         image: await from_candid_ExternalBlob_n12(_uploadFile, _downloadFile, value.image),
-        leftBattery: value.leftBattery
+        popupSize: value.popupSize,
+        leftBattery: value.leftBattery,
+        borderColor: value.borderColor,
+        shadowIntensity: value.shadowIntensity
     };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {

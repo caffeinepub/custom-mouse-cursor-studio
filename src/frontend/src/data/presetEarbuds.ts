@@ -1,7 +1,7 @@
 export interface PresetEarbud {
   id: string;
   label: string;
-  svg: string; // inline SVG as data URI
+  svg: string; // inline SVG as data URI or image path
 }
 
 function toDataUri(svg: string): string {
@@ -9,6 +9,11 @@ function toDataUri(svg: string): string {
 }
 
 const presets: PresetEarbud[] = [
+  {
+    id: "earbuds-photo",
+    label: "Earbuds",
+    svg: "/assets/generated/earbuds-transparent.dim_400x400.png",
+  },
   {
     id: "airpods-white",
     label: "AirPods White",

@@ -1,30 +1,29 @@
 # Earbuds Popup Studio
 
 ## Current State
-New project. No existing code.
+Bluetooth connection is handled by `BluetoothBatteryButton.tsx` and `useBluetoothBattery.ts`. The hook connects via Web Bluetooth API, reads battery level, and subscribes to notifications. The UI shows a connect button, a connected state with live battery bars, and error messages.
 
 ## Requested Changes (Diff)
 
 ### Add
-- AirPods-style earbuds popup UI (like iPhone connection popup)
-- Popup shows left earbud, right earbud, and case battery percentages
-- Customize popup: background color, accent color, font style, earbuds image/icon, device name
-- Add and manage multiple earbuds models/entries in a gallery
-- Preview popup in real-time as user customizes
-- Save customized popups to a collection
+- Step-by-step visual guide shown before/during connection (expandable helper text with numbered steps: turn on Bluetooth, pair earbuds first, click Connect, select device)
+- Better error messages with actionable retry tips specific to error type (permission denied, not found, unsupported)
+- Auto-reconnect: remember last connected device name in localStorage, show a "Reconnect to [device]" option when supported
+- Connection status indicator with animated pulse when connected
+- "How to connect" collapsible help section with tips for Android/Chrome users
+- Retry button directly in error state
 
 ### Modify
-- N/A
+- `BluetoothBatteryButton.tsx`: Enhance UI with help section, better error UI with retry, reconnect hint
+- `useBluetoothBattery.ts`: Store last device name in localStorage; add reconnect logic
 
 ### Remove
-- N/A
+- Nothing removed
 
 ## Implementation Plan
-1. Backend: Store earbuds models with name, battery levels (L/R/case), image URL, and customization settings (colors, font)
-2. Frontend:
-   - Main page: gallery of saved earbuds models
-   - Popup preview component (AirPods-style card with animated appearance)
-   - Customization panel: device name, battery %, color pickers, font selector, image upload
-   - Add new model form
-   - Real-time preview as user edits settings
-   - Trigger popup demo button
+1. Update `useBluetoothBattery.ts` to save last device name to localStorage and expose a `lastDeviceName` state.
+2. Update `BluetoothBatteryButton.tsx`:
+   - Add collapsible "How to connect" help panel with step-by-step guide
+   - Show "Last connected: [name] — Reconnect?" hint when disconnected and lastDeviceName exists
+   - Better error display: specific tips per error type + Retry button
+   - Animated connection status

@@ -10,4 +10,14 @@ export interface PopupConfig {
   imageFile?: File;
   imageSize?: number;
   popupSize?: number;
+  popupShape?: "Rounded" | "Square" | "Pill";
+  popupTheme?: "Dark" | "Light" | "Glassmorphism" | "Neon";
+  borderColor?: string;
+  borderWidth?: number;
+  shadowIntensity?: "None" | "Soft" | "Medium" | "Strong" | "Glow";
+  imagePosition?: "Top" | "Left" | "Right";
+  soundPreset?: "Default" | "Chime" | "Click" | "Whoosh" | "Pop" | "None";
+  soundVolume?: number;
+  customOpenSoundUrl?: string;
+  customCloseSoundUrl?: string;
 }

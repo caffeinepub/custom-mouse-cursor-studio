@@ -12,14 +12,22 @@ import type { Principal } from '@icp-sdk/core/principal';
 
 export interface EarbudsProfile {
   'id' : bigint,
+  'popupTheme' : string,
   'backgroundColor' : string,
+  'imageSize' : bigint,
   'fontStyle' : string,
   'name' : string,
+  'borderWidth' : bigint,
   'accentColor' : string,
+  'popupShape' : string,
   'caseBattery' : bigint,
+  'imagePosition' : string,
   'rightBattery' : bigint,
   'image' : ExternalBlob,
+  'popupSize' : bigint,
   'leftBattery' : bigint,
+  'borderColor' : string,
+  'shadowIntensity' : string,
 }
 export type ExternalBlob = Uint8Array;
 export interface _CaffeineStorageCreateCertificateResult {
@@ -50,7 +58,24 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   'addProfile' : ActorMethod<
-    [string, bigint, bigint, bigint, string, string, string, ExternalBlob],
+    [
+      string,
+      bigint,
+      bigint,
+      bigint,
+      string,
+      string,
+      string,
+      ExternalBlob,
+      bigint,
+      bigint,
+      string,
+      string,
+      string,
+      bigint,
+      string,
+      string,
+    ],
     bigint
   >,
   'deleteProfile' : ActorMethod<[bigint], undefined>,
@@ -67,6 +92,14 @@ export interface _SERVICE {
       string,
       string,
       ExternalBlob,
+      bigint,
+      bigint,
+      string,
+      string,
+      string,
+      bigint,
+      string,
+      string,
     ],
     undefined
   >,

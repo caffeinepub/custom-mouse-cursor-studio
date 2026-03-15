@@ -22,6 +22,14 @@ function profileToConfig(profile: EarbudsProfile): PopupConfig {
     accentColor: profile.accentColor,
     fontStyle: profile.fontStyle,
     imageUrl: profile.image.getDirectURL(),
+    imageSize: Number(profile.imageSize),
+    popupSize: Number(profile.popupSize),
+    popupShape: profile.popupShape as PopupConfig["popupShape"],
+    popupTheme: profile.popupTheme as PopupConfig["popupTheme"],
+    borderColor: profile.borderColor,
+    borderWidth: Number(profile.borderWidth),
+    shadowIntensity: profile.shadowIntensity as PopupConfig["shadowIntensity"],
+    imagePosition: profile.imagePosition as PopupConfig["imagePosition"],
   };
 }
 
@@ -196,7 +204,7 @@ export default function ModelGallery({ onSelect }: Props) {
               className="absolute inset-0 w-full h-full cursor-default"
               onClick={closePreview}
             />
-            <div className="relative z-10">
+            <div className="relative z-10 flex flex-col items-center gap-4">
               <EarbudsPopup
                 config={profileToConfig(previewProfile)}
                 inline={false}

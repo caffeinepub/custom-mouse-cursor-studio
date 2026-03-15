@@ -1,8 +1,6 @@
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 import Array "mo:core/Array";
-import Text "mo:core/Text";
-import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
@@ -22,6 +20,14 @@ actor {
     accentColor : Text;
     fontStyle : Text;
     image : Storage.ExternalBlob;
+    imageSize : Nat;
+    popupSize : Nat;
+    popupShape : Text;
+    popupTheme : Text;
+    borderColor : Text;
+    borderWidth : Nat;
+    shadowIntensity : Text;
+    imagePosition : Text;
   };
 
   module EarbudsProfile {
@@ -42,6 +48,14 @@ actor {
     accentColor : Text,
     fontStyle : Text,
     image : Storage.ExternalBlob,
+    imageSize : Nat,
+    popupSize : Nat,
+    popupShape : Text,
+    popupTheme : Text,
+    borderColor : Text,
+    borderWidth : Nat,
+    shadowIntensity : Text,
+    imagePosition : Text,
   ) : async Nat {
     let id = nextId;
     let profile : EarbudsProfile = {
@@ -54,6 +68,14 @@ actor {
       accentColor;
       fontStyle;
       image;
+      imageSize;
+      popupSize;
+      popupShape;
+      popupTheme;
+      borderColor;
+      borderWidth;
+      shadowIntensity;
+      imagePosition;
     };
     profiles.add(id, profile);
     nextId += 1;
@@ -70,6 +92,14 @@ actor {
     accentColor : Text,
     fontStyle : Text,
     image : Storage.ExternalBlob,
+    imageSize : Nat,
+    popupSize : Nat,
+    popupShape : Text,
+    popupTheme : Text,
+    borderColor : Text,
+    borderWidth : Nat,
+    shadowIntensity : Text,
+    imagePosition : Text,
   ) : async () {
     switch (profiles.get(id)) {
       case (null) { () };
@@ -84,6 +114,14 @@ actor {
           accentColor;
           fontStyle;
           image;
+          imageSize;
+          popupSize;
+          popupShape;
+          popupTheme;
+          borderColor;
+          borderWidth;
+          shadowIntensity;
+          imagePosition;
         };
         profiles.add(id, updatedProfile);
       };

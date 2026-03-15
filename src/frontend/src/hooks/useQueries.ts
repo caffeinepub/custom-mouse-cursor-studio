@@ -44,6 +44,14 @@ export function useAddProfile() {
         config.accentColor,
         config.fontStyle,
         blob,
+        BigInt(config.imageSize ?? 120),
+        BigInt(config.popupSize ?? 280),
+        config.popupShape ?? "Rounded",
+        config.popupTheme ?? "Dark",
+        config.borderColor ?? "#ffffff",
+        BigInt(config.borderWidth ?? 0),
+        config.shadowIntensity ?? "Medium",
+        config.imagePosition ?? "Top",
       );
     },
     onSuccess: () => {
@@ -107,6 +115,14 @@ export function useUpdateProfile() {
         config.accentColor,
         config.fontStyle,
         blob,
+        BigInt(config.imageSize ?? 120),
+        BigInt(config.popupSize ?? 280),
+        config.popupShape ?? "Rounded",
+        config.popupTheme ?? "Dark",
+        config.borderColor ?? "#ffffff",
+        BigInt(config.borderWidth ?? 0),
+        config.shadowIntensity ?? "Medium",
+        config.imagePosition ?? "Top",
       );
     },
     onSuccess: () => {

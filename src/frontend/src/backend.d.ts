@@ -16,19 +16,27 @@ export class ExternalBlob {
 }
 export interface EarbudsProfile {
     id: bigint;
+    popupTheme: string;
     backgroundColor: string;
+    imageSize: bigint;
     fontStyle: string;
     name: string;
+    borderWidth: bigint;
     accentColor: string;
+    popupShape: string;
     caseBattery: bigint;
+    imagePosition: string;
     rightBattery: bigint;
     image: ExternalBlob;
+    popupSize: bigint;
     leftBattery: bigint;
+    borderColor: string;
+    shadowIntensity: string;
 }
 export interface backendInterface {
-    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<bigint>;
+    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob, imageSize: bigint, popupSize: bigint, popupShape: string, popupTheme: string, borderColor: string, borderWidth: bigint, shadowIntensity: string, imagePosition: string): Promise<bigint>;
     deleteProfile(id: bigint): Promise<void>;
     getAllProfiles(): Promise<Array<EarbudsProfile>>;
     getProfile(id: bigint): Promise<EarbudsProfile | null>;
-    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<void>;
+    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob, imageSize: bigint, popupSize: bigint, popupShape: string, popupTheme: string, borderColor: string, borderWidth: bigint, shadowIntensity: string, imagePosition: string): Promise<void>;
 }

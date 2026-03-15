@@ -1,27 +1,30 @@
-# Custom Mouse Cursor Studio
+# Earbuds Popup Studio
 
 ## Current State
-New project, no existing code.
+New project. No existing code.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Photo upload feature to use as custom cursor
-- Cursor customization panel (size, opacity, rotation, shape crop)
-- Live preview canvas/playground area
-- Touch/finger support (pointer events) so it works on mobile too
-- Pre-built cursor effects (trail, glow, bounce)
-- Gallery of uploaded cursor photos
+- AirPods-style earbuds popup UI (like iPhone connection popup)
+- Popup shows left earbud, right earbud, and case battery percentages
+- Customize popup: background color, accent color, font style, earbuds image/icon, device name
+- Add and manage multiple earbuds models/entries in a gallery
+- Preview popup in real-time as user customizes
+- Save customized popups to a collection
 
 ### Modify
-N/A
+- N/A
 
 ### Remove
-N/A
+- N/A
 
 ## Implementation Plan
-1. Backend: store uploaded cursor images as blobs
-2. Frontend: upload photo, customize cursor options, apply as real CSS cursor or canvas overlay
-3. Playground area: a large interactive canvas where user can move cursor/finger to see the effect
-4. Customization panel: sliders for size/opacity, toggle effects (trail, glow)
-5. Pointer events for both mouse and touch support
+1. Backend: Store earbuds models with name, battery levels (L/R/case), image URL, and customization settings (colors, font)
+2. Frontend:
+   - Main page: gallery of saved earbuds models
+   - Popup preview component (AirPods-style card with animated appearance)
+   - Customization panel: device name, battery %, color pickers, font selector, image upload
+   - Add new model form
+   - Real-time preview as user edits settings
+   - Trigger popup demo button

@@ -10,22 +10,18 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface CursorConfig {
-  'id' : string,
+export interface EarbudsProfile {
+  'id' : bigint,
+  'backgroundColor' : string,
+  'fontStyle' : string,
   'name' : string,
-  'createdAt' : bigint,
-  'size' : bigint,
-  'effect' : EffectType,
-  'shape' : ShapeType,
+  'accentColor' : string,
+  'caseBattery' : bigint,
+  'rightBattery' : bigint,
   'image' : ExternalBlob,
-  'opacity' : number,
+  'leftBattery' : bigint,
 }
-export type EffectType = { 'trail' : null } |
-  { 'glow' : null } |
-  { 'none' : null };
 export type ExternalBlob = Uint8Array;
-export type ShapeType = { 'circle' : null } |
-  { 'square' : null };
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -53,11 +49,25 @@ export interface _SERVICE {
     _CaffeineStorageRefillResult
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
-  'deleteCursor' : ActorMethod<[string], undefined>,
-  'getCursor' : ActorMethod<[string], CursorConfig>,
-  'listCursors' : ActorMethod<[], Array<CursorConfig>>,
-  'saveCursorConfig' : ActorMethod<
-    [string, string, ExternalBlob, bigint, number, EffectType, ShapeType],
+  'addProfile' : ActorMethod<
+    [string, bigint, bigint, bigint, string, string, string, ExternalBlob],
+    bigint
+  >,
+  'deleteProfile' : ActorMethod<[bigint], undefined>,
+  'getAllProfiles' : ActorMethod<[], Array<EarbudsProfile>>,
+  'getProfile' : ActorMethod<[bigint], [] | [EarbudsProfile]>,
+  'updateProfile' : ActorMethod<
+    [
+      bigint,
+      string,
+      bigint,
+      bigint,
+      bigint,
+      string,
+      string,
+      string,
+      ExternalBlob,
+    ],
     undefined
   >,
 }

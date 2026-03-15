@@ -19,25 +19,17 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
-export const EffectType = IDL.Variant({
-  'trail' : IDL.Null,
-  'glow' : IDL.Null,
-  'none' : IDL.Null,
-});
-export const ShapeType = IDL.Variant({
-  'circle' : IDL.Null,
-  'square' : IDL.Null,
-});
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
-export const CursorConfig = IDL.Record({
-  'id' : IDL.Text,
+export const EarbudsProfile = IDL.Record({
+  'id' : IDL.Nat,
+  'backgroundColor' : IDL.Text,
+  'fontStyle' : IDL.Text,
   'name' : IDL.Text,
-  'createdAt' : IDL.Int,
-  'size' : IDL.Nat,
-  'effect' : EffectType,
-  'shape' : ShapeType,
+  'accentColor' : IDL.Text,
+  'caseBattery' : IDL.Nat,
+  'rightBattery' : IDL.Nat,
   'image' : ExternalBlob,
-  'opacity' : IDL.Float64,
+  'leftBattery' : IDL.Nat,
 });
 
 export const idlService = IDL.Service({
@@ -67,18 +59,34 @@ export const idlService = IDL.Service({
       [],
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-  'deleteCursor' : IDL.Func([IDL.Text], [], []),
-  'getCursor' : IDL.Func([IDL.Text], [CursorConfig], ['query']),
-  'listCursors' : IDL.Func([], [IDL.Vec(CursorConfig)], ['query']),
-  'saveCursorConfig' : IDL.Func(
+  'addProfile' : IDL.Func(
       [
+        IDL.Text,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Text,
         IDL.Text,
         IDL.Text,
         ExternalBlob,
+      ],
+      [IDL.Nat],
+      [],
+    ),
+  'deleteProfile' : IDL.Func([IDL.Nat], [], []),
+  'getAllProfiles' : IDL.Func([], [IDL.Vec(EarbudsProfile)], ['query']),
+  'getProfile' : IDL.Func([IDL.Nat], [IDL.Opt(EarbudsProfile)], ['query']),
+  'updateProfile' : IDL.Func(
+      [
         IDL.Nat,
-        IDL.Float64,
-        EffectType,
-        ShapeType,
+        IDL.Text,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Nat,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        ExternalBlob,
       ],
       [],
       [],
@@ -99,22 +107,17 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
-  const EffectType = IDL.Variant({
-    'trail' : IDL.Null,
-    'glow' : IDL.Null,
-    'none' : IDL.Null,
-  });
-  const ShapeType = IDL.Variant({ 'circle' : IDL.Null, 'square' : IDL.Null });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
-  const CursorConfig = IDL.Record({
-    'id' : IDL.Text,
+  const EarbudsProfile = IDL.Record({
+    'id' : IDL.Nat,
+    'backgroundColor' : IDL.Text,
+    'fontStyle' : IDL.Text,
     'name' : IDL.Text,
-    'createdAt' : IDL.Int,
-    'size' : IDL.Nat,
-    'effect' : EffectType,
-    'shape' : ShapeType,
+    'accentColor' : IDL.Text,
+    'caseBattery' : IDL.Nat,
+    'rightBattery' : IDL.Nat,
     'image' : ExternalBlob,
-    'opacity' : IDL.Float64,
+    'leftBattery' : IDL.Nat,
   });
   
   return IDL.Service({
@@ -144,18 +147,34 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-    'deleteCursor' : IDL.Func([IDL.Text], [], []),
-    'getCursor' : IDL.Func([IDL.Text], [CursorConfig], ['query']),
-    'listCursors' : IDL.Func([], [IDL.Vec(CursorConfig)], ['query']),
-    'saveCursorConfig' : IDL.Func(
+    'addProfile' : IDL.Func(
         [
+          IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Text,
           IDL.Text,
           IDL.Text,
           ExternalBlob,
+        ],
+        [IDL.Nat],
+        [],
+      ),
+    'deleteProfile' : IDL.Func([IDL.Nat], [], []),
+    'getAllProfiles' : IDL.Func([], [IDL.Vec(EarbudsProfile)], ['query']),
+    'getProfile' : IDL.Func([IDL.Nat], [IDL.Opt(EarbudsProfile)], ['query']),
+    'updateProfile' : IDL.Func(
+        [
           IDL.Nat,
-          IDL.Float64,
-          EffectType,
-          ShapeType,
+          IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          ExternalBlob,
         ],
         [],
         [],

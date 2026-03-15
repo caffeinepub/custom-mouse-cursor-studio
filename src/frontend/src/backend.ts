@@ -89,18 +89,16 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface _CaffeineStorageRefillInformation {
-    proposed_top_up_amount?: bigint;
-}
-export interface CursorConfig {
-    id: string;
+export interface EarbudsProfile {
+    id: bigint;
+    backgroundColor: string;
+    fontStyle: string;
     name: string;
-    createdAt: bigint;
-    size: bigint;
-    effect: EffectType;
-    shape: ShapeType;
+    accentColor: string;
+    caseBattery: bigint;
+    rightBattery: bigint;
     image: ExternalBlob;
-    opacity: number;
+    leftBattery: bigint;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
@@ -110,14 +108,8 @@ export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
 }
-export enum EffectType {
-    trail = "trail",
-    glow = "glow",
-    none = "none"
-}
-export enum ShapeType {
-    circle = "circle",
-    square = "square"
+export interface _CaffeineStorageRefillInformation {
+    proposed_top_up_amount?: bigint;
 }
 export interface backendInterface {
     _caffeineStorageBlobIsLive(hash: Uint8Array): Promise<boolean>;
@@ -126,12 +118,13 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
-    deleteCursor(id: string): Promise<void>;
-    getCursor(id: string): Promise<CursorConfig>;
-    listCursors(): Promise<Array<CursorConfig>>;
-    saveCursorConfig(id: string, name: string, image: ExternalBlob, size: bigint, opacity: number, effect: EffectType, shape: ShapeType): Promise<void>;
+    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<bigint>;
+    deleteProfile(id: bigint): Promise<void>;
+    getAllProfiles(): Promise<Array<EarbudsProfile>>;
+    getProfile(id: bigint): Promise<EarbudsProfile | null>;
+    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<void>;
 }
-import type { CursorConfig as _CursorConfig, EffectType as _EffectType, ExternalBlob as _ExternalBlob, ShapeType as _ShapeType, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { EarbudsProfile as _EarbudsProfile, ExternalBlob as _ExternalBlob, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -218,83 +211,127 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async deleteCursor(arg0: string): Promise<void> {
+    async addProfile(arg0: string, arg1: bigint, arg2: bigint, arg3: bigint, arg4: string, arg5: string, arg6: string, arg7: ExternalBlob): Promise<bigint> {
         if (this.processError) {
             try {
-                const result = await this.actor.deleteCursor(arg0);
+                const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.deleteCursor(arg0);
+            const result = await this.actor.addProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg7));
             return result;
         }
     }
-    async getCursor(arg0: string): Promise<CursorConfig> {
+    async deleteProfile(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getCursor(arg0);
-                return from_candid_CursorConfig_n8(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getCursor(arg0);
-            return from_candid_CursorConfig_n8(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async listCursors(): Promise<Array<CursorConfig>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.listCursors();
-                return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.listCursors();
-            return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async saveCursorConfig(arg0: string, arg1: string, arg2: ExternalBlob, arg3: bigint, arg4: number, arg5: EffectType, arg6: ShapeType): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.saveCursorConfig(arg0, arg1, await to_candid_ExternalBlob_n16(this._uploadFile, this._downloadFile, arg2), arg3, arg4, to_candid_EffectType_n17(this._uploadFile, this._downloadFile, arg5), to_candid_ShapeType_n19(this._uploadFile, this._downloadFile, arg6));
+                const result = await this.actor.deleteProfile(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.saveCursorConfig(arg0, arg1, await to_candid_ExternalBlob_n16(this._uploadFile, this._downloadFile, arg2), arg3, arg4, to_candid_EffectType_n17(this._uploadFile, this._downloadFile, arg5), to_candid_ShapeType_n19(this._uploadFile, this._downloadFile, arg6));
+            const result = await this.actor.deleteProfile(arg0);
+            return result;
+        }
+    }
+    async getAllProfiles(): Promise<Array<EarbudsProfile>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllProfiles();
+                return from_candid_vec_n9(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllProfiles();
+            return from_candid_vec_n9(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getProfile(arg0: bigint): Promise<EarbudsProfile | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getProfile(arg0);
+                return from_candid_opt_n13(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getProfile(arg0);
+            return from_candid_opt_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async updateProfile(arg0: bigint, arg1: string, arg2: bigint, arg3: bigint, arg4: bigint, arg5: string, arg6: string, arg7: string, arg8: ExternalBlob): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateProfile(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg8));
             return result;
         }
     }
 }
-async function from_candid_CursorConfig_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CursorConfig): Promise<CursorConfig> {
-    return await from_candid_record_n9(_uploadFile, _downloadFile, value);
+async function from_candid_EarbudsProfile_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EarbudsProfile): Promise<EarbudsProfile> {
+    return await from_candid_record_n11(_uploadFile, _downloadFile, value);
 }
-function from_candid_EffectType_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EffectType): EffectType {
-    return from_candid_variant_n11(_uploadFile, _downloadFile, value);
-}
-async function from_candid_ExternalBlob_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ExternalBlob): Promise<ExternalBlob> {
+async function from_candid_ExternalBlob_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ExternalBlob): Promise<ExternalBlob> {
     return await _downloadFile(value);
-}
-function from_candid_ShapeType_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ShapeType): ShapeType {
-    return from_candid_variant_n13(_uploadFile, _downloadFile, value);
 }
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
+}
+async function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_EarbudsProfile]): Promise<EarbudsProfile | null> {
+    return value.length === 0 ? null : await from_candid_EarbudsProfile_n10(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
+}
+async function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
+    backgroundColor: string;
+    fontStyle: string;
+    name: string;
+    accentColor: string;
+    caseBattery: bigint;
+    rightBattery: bigint;
+    image: _ExternalBlob;
+    leftBattery: bigint;
+}): Promise<{
+    id: bigint;
+    backgroundColor: string;
+    fontStyle: string;
+    name: string;
+    accentColor: string;
+    caseBattery: bigint;
+    rightBattery: bigint;
+    image: ExternalBlob;
+    leftBattery: bigint;
+}> {
+    return {
+        id: value.id,
+        backgroundColor: value.backgroundColor,
+        fontStyle: value.fontStyle,
+        name: value.name,
+        accentColor: value.accentColor,
+        caseBattery: value.caseBattery,
+        rightBattery: value.rightBattery,
+        image: await from_candid_ExternalBlob_n12(_uploadFile, _downloadFile, value.image),
+        leftBattery: value.leftBattery
+    };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     success: [] | [boolean];
@@ -308,63 +345,11 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-async function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: string;
-    name: string;
-    createdAt: bigint;
-    size: bigint;
-    effect: _EffectType;
-    shape: _ShapeType;
-    image: _ExternalBlob;
-    opacity: number;
-}): Promise<{
-    id: string;
-    name: string;
-    createdAt: bigint;
-    size: bigint;
-    effect: EffectType;
-    shape: ShapeType;
-    image: ExternalBlob;
-    opacity: number;
-}> {
-    return {
-        id: value.id,
-        name: value.name,
-        createdAt: value.createdAt,
-        size: value.size,
-        effect: from_candid_EffectType_n10(_uploadFile, _downloadFile, value.effect),
-        shape: from_candid_ShapeType_n12(_uploadFile, _downloadFile, value.shape),
-        image: await from_candid_ExternalBlob_n14(_uploadFile, _downloadFile, value.image),
-        opacity: value.opacity
-    };
+async function from_candid_vec_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_EarbudsProfile>): Promise<Array<EarbudsProfile>> {
+    return await Promise.all(value.map(async (x)=>await from_candid_EarbudsProfile_n10(_uploadFile, _downloadFile, x)));
 }
-function from_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    trail: null;
-} | {
-    glow: null;
-} | {
-    none: null;
-}): EffectType {
-    return "trail" in value ? EffectType.trail : "glow" in value ? EffectType.glow : "none" in value ? EffectType.none : value;
-}
-function from_candid_variant_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    circle: null;
-} | {
-    square: null;
-}): ShapeType {
-    return "circle" in value ? ShapeType.circle : "square" in value ? ShapeType.square : value;
-}
-async function from_candid_vec_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_CursorConfig>): Promise<Array<CursorConfig>> {
-    return await Promise.all(value.map(async (x)=>await from_candid_CursorConfig_n8(_uploadFile, _downloadFile, x)));
-}
-function to_candid_EffectType_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EffectType): _EffectType {
-    return to_candid_variant_n18(_uploadFile, _downloadFile, value);
-}
-async function to_candid_ExternalBlob_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
+async function to_candid_ExternalBlob_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
     return await _uploadFile(value);
-}
-function to_candid_ShapeType_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ShapeType): _ShapeType {
-    return to_candid_variant_n20(_uploadFile, _downloadFile, value);
 }
 function to_candid__CaffeineStorageRefillInformation_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _CaffeineStorageRefillInformation): __CaffeineStorageRefillInformation {
     return to_candid_record_n3(_uploadFile, _downloadFile, value);
@@ -380,32 +365,6 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
     return {
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
-}
-function to_candid_variant_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EffectType): {
-    trail: null;
-} | {
-    glow: null;
-} | {
-    none: null;
-} {
-    return value == EffectType.trail ? {
-        trail: null
-    } : value == EffectType.glow ? {
-        glow: null
-    } : value == EffectType.none ? {
-        none: null
-    } : value;
-}
-function to_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ShapeType): {
-    circle: null;
-} | {
-    square: null;
-} {
-    return value == ShapeType.circle ? {
-        circle: null
-    } : value == ShapeType.square ? {
-        square: null
-    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -1,247 +1,155 @@
-import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
-import { motion } from "motion/react";
-import { useCallback, useState } from "react";
-import { toast } from "sonner";
-import { EffectType, ShapeType } from "./backend";
-import type { CursorConfig } from "./backend";
-import { CursorGallery } from "./components/CursorGallery";
-import { CustomizerPanel } from "./components/CustomizerPanel";
-import type { CursorConfig as LocalCursorConfig } from "./components/CustomizerPanel";
-import { Playground } from "./components/Playground";
-import {
-  useDeleteCursor,
-  useListCursors,
-  useSaveCursor,
-} from "./hooks/useQueries";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Headphones, Layers, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import CustomizationPanel from "./components/CustomizationPanel";
+import EarbudsPopup from "./components/EarbudsPopup";
+import ModelGallery from "./components/ModelGallery";
+import type { PopupConfig } from "./types";
 
-const DEFAULT_CONFIG: LocalCursorConfig = {
-  imageUrl: null,
-  imageBytes: null,
-  size: 48,
-  opacity: 100,
-  shape: ShapeType.circle,
-  effect: EffectType.none,
-  name: "My Cursor",
+const DEFAULT_CONFIG: PopupConfig = {
+  name: "AirPods Pro",
+  leftBattery: 85,
+  rightBattery: 78,
+  caseBattery: 62,
+  backgroundColor: "#1c1c1e",
+  accentColor: "#0a84ff",
+  fontStyle: "Modern",
+  imageUrl: "/assets/generated/airpods-default.dim_400x300.png",
 };
 
 export default function App() {
-  const [config, setConfig] = useState<LocalCursorConfig>(DEFAULT_CONFIG);
-  const [activeCursorId, setActiveCursorId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [config, setConfig] = useState<PopupConfig>(DEFAULT_CONFIG);
+  const [showPopup, setShowPopup] = useState(false);
+  const [activeTab, setActiveTab] = useState("studio");
 
-  const { data: cursors = [], isLoading: isLoadingCursors } = useListCursors();
-  const { mutateAsync: saveCursor, isPending: isSaving } = useSaveCursor();
-  const { mutateAsync: deleteCursor } = useDeleteCursor();
-
-  const handleConfigChange = useCallback(
-    (partial: Partial<LocalCursorConfig>) => {
-      setConfig((prev) => ({ ...prev, ...partial }));
-    },
-    [],
-  );
-
-  const handleSave = async () => {
-    if (!config.imageBytes || !config.imageUrl) {
-      toast.error("Please upload an image first");
-      return;
-    }
-    const id = `cursor_${Date.now()}`;
-    try {
-      await saveCursor({
-        id,
-        name: config.name || "My Cursor",
-        imageBytes: config.imageBytes,
-        size: config.size,
-        opacity: config.opacity,
-        effect: config.effect,
-        shape: config.shape,
-      });
-      toast.success("Cursor saved successfully!");
-      setActiveCursorId(id);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to save cursor");
-    }
+  const handleGallerySelect = (newConfig: PopupConfig) => {
+    setConfig(newConfig);
+    setActiveTab("studio");
   };
 
-  const handleActivate = useCallback((cursor: CursorConfig) => {
-    setConfig({
-      imageUrl: cursor.image.getDirectURL(),
-      imageBytes: null,
-      size: Number(cursor.size),
-      opacity: Math.round(cursor.opacity * 100),
-      shape: cursor.shape,
-      effect: cursor.effect,
-      name: cursor.name,
-    });
-    setActiveCursorId(cursor.id);
-    toast.success(`Cursor "${cursor.name}" activated!`);
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    try {
-      await deleteCursor(id);
-      if (activeCursorId === id) {
-        setActiveCursorId(null);
-        setConfig(DEFAULT_CONFIG);
-      }
-      toast.success("Cursor deleted");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete cursor");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const year = new Date().getFullYear();
+  const closePopup = () => setShowPopup(false);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Toaster position="top-right" theme="dark" />
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      <Toaster />
 
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
-          <motion.div
-            className="flex items-center gap-3"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <img
-              src="/assets/generated/cursor-studio-logo-transparent.dim_80x80.png"
-              alt="Cursor Studio"
-              className="w-8 h-8"
-            />
-            <div>
-              <h1 className="font-display font-bold text-lg leading-none text-foreground">
-                Cursor Studio
-              </h1>
-              <p className="font-mono text-xs text-muted-foreground">
-                Custom Mouse Cursor Designer
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="flex items-center gap-2"
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-          >
-            <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse-glow" />
-              <span>Mouse + Touch Supported</span>
-            </div>
-          </motion.div>
+      <header className="relative border-b border-border/40 px-6 py-4 flex items-center justify-between">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+            <Headphones className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-display font-bold text-lg leading-tight tracking-tight text-foreground">
+              Earbuds Popup Studio
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Design & preview your device popups
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 relative z-10">
+          <Sparkles className="w-4 h-4 text-primary/60" />
+          <span className="text-xs text-muted-foreground hidden sm:block">
+            Live Preview
+          </span>
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="flex-1 max-w-[1600px] mx-auto w-full px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_280px] gap-6 h-full">
-          {/* Left: Customizer Panel */}
-          <motion.aside
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-card border border-border rounded-2xl p-5"
-          >
-            <div className="mb-4">
-              <h2 className="font-display font-semibold text-base text-foreground">
-                Customize
-              </h2>
-              <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                Upload & style your cursor
-              </p>
-            </div>
-            <Separator className="mb-5" />
-            <CustomizerPanel
-              config={config}
-              onChange={handleConfigChange}
-              onSave={handleSave}
-              isSaving={isSaving}
-            />
-          </motion.aside>
+      <main className="flex-1 p-4 md:p-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6 bg-secondary/50 border border-border/40">
+            <TabsTrigger
+              value="studio"
+              data-ocid="studio.tab"
+              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary gap-2"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Studio
+            </TabsTrigger>
+            <TabsTrigger
+              value="gallery"
+              data-ocid="gallery.tab"
+              className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary gap-2"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              Gallery
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Center: Playground */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col"
-          >
-            <div className="mb-4">
-              <h2 className="font-display font-semibold text-base text-foreground">
-                Playground
-              </h2>
-              <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                Move your mouse or finger to test
-              </p>
-            </div>
-            <Separator className="mb-5" />
-            <div className="flex-1">
-              <Playground
-                imageUrl={config.imageUrl}
-                size={config.size}
-                opacity={config.opacity}
-                shape={config.shape}
-                effect={config.effect}
+          <TabsContent value="studio" className="mt-0">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <CustomizationPanel
+                config={config}
+                onChange={setConfig}
+                onShowPopup={() => setShowPopup(true)}
               />
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-sm text-muted-foreground font-body">
+                  Live Preview
+                </p>
+                <EarbudsPopup config={config} inline />
+              </div>
             </div>
-          </motion.section>
+          </TabsContent>
 
-          {/* Right: Gallery */}
-          <motion.aside
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-card border border-border rounded-2xl p-5"
-          >
-            <div className="mb-4">
-              <h2 className="font-display font-semibold text-base text-foreground">
-                Gallery
-              </h2>
-              <p className="text-xs text-muted-foreground font-mono mt-0.5">
-                Click to activate
-              </p>
-            </div>
-            <Separator className="mb-5" />
-            <CursorGallery
-              cursors={cursors}
-              activeCursorId={activeCursorId}
-              isLoading={isLoadingCursors}
-              deletingId={deletingId}
-              onActivate={handleActivate}
-              onDelete={handleDelete}
-            />
-          </motion.aside>
-        </div>
+          <TabsContent value="gallery" className="mt-0">
+            <ModelGallery onSelect={handleGallerySelect} />
+          </TabsContent>
+        </Tabs>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-8">
-        <div className="max-w-[1600px] mx-auto px-4 py-4 flex items-center justify-between">
-          <p className="text-xs font-mono text-muted-foreground/50">
-            © {year}. Built with ♥ using{" "}
-            <a
-              href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary/60 hover:text-primary transition-colors"
-            >
-              caffeine.ai
-            </a>
-          </p>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground/40">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-            Cursor Studio v1.0
-          </div>
-        </div>
+      <footer className="border-t border-border/30 py-3 px-6 text-center">
+        <p className="text-xs text-muted-foreground">
+          © {new Date().getFullYear()}. Built with ♥ using{" "}
+          <a
+            href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
+            className="text-primary/70 hover:text-primary transition-colors"
+            target="_blank"
+            rel="noreferrer"
+          >
+            caffeine.ai
+          </a>
+        </p>
       </footer>
+
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+              background: "rgba(0,0,0,0.7)",
+              backdropFilter: "blur(8px)",
+            }}
+            data-ocid="popup.modal"
+          >
+            {/* Invisible backdrop button */}
+            <button
+              type="button"
+              aria-label="Close popup"
+              className="absolute inset-0 w-full h-full cursor-default"
+              onClick={closePopup}
+            />
+            <div className="relative z-10">
+              <EarbudsPopup config={config} inline={false} />
+            </div>
+            <button
+              type="button"
+              className="absolute top-4 right-4 text-white/60 hover:text-white text-sm z-10"
+              onClick={closePopup}
+              data-ocid="popup.close_button"
+            >
+              Tap anywhere to dismiss
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

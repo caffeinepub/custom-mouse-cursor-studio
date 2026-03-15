@@ -14,28 +14,21 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export interface CursorConfig {
-    id: string;
+export interface EarbudsProfile {
+    id: bigint;
+    backgroundColor: string;
+    fontStyle: string;
     name: string;
-    createdAt: bigint;
-    size: bigint;
-    effect: EffectType;
-    shape: ShapeType;
+    accentColor: string;
+    caseBattery: bigint;
+    rightBattery: bigint;
     image: ExternalBlob;
-    opacity: number;
-}
-export enum EffectType {
-    trail = "trail",
-    glow = "glow",
-    none = "none"
-}
-export enum ShapeType {
-    circle = "circle",
-    square = "square"
+    leftBattery: bigint;
 }
 export interface backendInterface {
-    deleteCursor(id: string): Promise<void>;
-    getCursor(id: string): Promise<CursorConfig>;
-    listCursors(): Promise<Array<CursorConfig>>;
-    saveCursorConfig(id: string, name: string, image: ExternalBlob, size: bigint, opacity: number, effect: EffectType, shape: ShapeType): Promise<void>;
+    addProfile(name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<bigint>;
+    deleteProfile(id: bigint): Promise<void>;
+    getAllProfiles(): Promise<Array<EarbudsProfile>>;
+    getProfile(id: bigint): Promise<EarbudsProfile | null>;
+    updateProfile(id: bigint, name: string, leftBattery: bigint, rightBattery: bigint, caseBattery: bigint, backgroundColor: string, accentColor: string, fontStyle: string, image: ExternalBlob): Promise<void>;
 }

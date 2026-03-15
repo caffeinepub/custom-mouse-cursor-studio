@@ -17,6 +17,8 @@ const DEFAULT_CONFIG: PopupConfig = {
   accentColor: "#0a84ff",
   fontStyle: "Modern",
   imageUrl: "/assets/generated/airpods-default.dim_400x300.png",
+  imageSize: 120,
+  popupSize: 280,
 };
 
 export default function App() {

@@ -58,6 +58,9 @@ export default function CustomizationPanel({
 
   const openFilePicker = () => fileInputRef.current?.click();
 
+  const imageSize = config.imageSize ?? 120;
+  const popupSize = config.popupSize ?? 280;
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -239,6 +242,51 @@ export default function CustomizationPanel({
             <SelectItem value="Classic">Classic (Serif)</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <Separator className="bg-border/40" />
+
+      {/* Size Controls */}
+      <div className="space-y-4">
+        <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+          Size Controls
+        </Label>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-foreground/80">Image Size</span>
+            <span className="text-xs font-mono text-primary">
+              {imageSize}px
+            </span>
+          </div>
+          <Slider
+            value={[imageSize]}
+            onValueChange={([v]) => update({ imageSize: v })}
+            min={60}
+            max={200}
+            step={5}
+            className="[&_[role=slider]]:bg-primary [&_[role=slider]]:border-primary"
+            data-ocid="profile.image_size.toggle"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-foreground/80">Popup Size</span>
+            <span className="text-xs font-mono text-primary">
+              {popupSize}px
+            </span>
+          </div>
+          <Slider
+            value={[popupSize]}
+            onValueChange={([v]) => update({ popupSize: v })}
+            min={200}
+            max={420}
+            step={10}
+            className="[&_[role=slider]]:bg-primary [&_[role=slider]]:border-primary"
+            data-ocid="profile.popup_size.toggle"
+          />
+        </div>
       </div>
 
       <Separator className="bg-border/40" />

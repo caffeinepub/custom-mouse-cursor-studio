@@ -8,4 +8,6 @@ export interface PopupConfig {
   fontStyle: string;
   imageUrl: string;
   imageFile?: File;
+  imageSize?: number;
+  popupSize?: number;
 }

@@ -6,9 +6,9 @@ import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
   include MixinStorage();
 

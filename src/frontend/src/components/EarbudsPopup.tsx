@@ -82,6 +82,9 @@ const FONT_MAP: Record<string, string> = {
 
 export default function EarbudsPopup({ config, inline = false }: Props) {
   const fontFamily = FONT_MAP[config.fontStyle] ?? FONT_MAP.Modern;
+  const imageSize = config.imageSize ?? 120;
+  const popupSize = config.popupSize ?? 280;
+  const imageHeight = Math.round(imageSize * 0.75);
 
   const card = (
     <motion.div
@@ -91,7 +94,7 @@ export default function EarbudsPopup({ config, inline = false }: Props) {
       transition={{ type: "spring", stiffness: 300, damping: 28 }}
       className="relative overflow-hidden"
       style={{
-        width: 280,
+        width: popupSize,
         borderRadius: 24,
         background: config.backgroundColor,
         boxShadow: `0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08), 0 0 40px ${config.accentColor}22`,
@@ -120,9 +123,10 @@ export default function EarbudsPopup({ config, inline = false }: Props) {
       <div className="flex justify-center pt-7 pb-2">
         <div
           style={{
-            width: 120,
-            height: 90,
+            width: imageSize,
+            height: imageHeight,
             filter: `drop-shadow(0 8px 24px ${config.accentColor}44)`,
+            transition: "width 0.2s ease, height 0.2s ease",
           }}
         >
           <img
